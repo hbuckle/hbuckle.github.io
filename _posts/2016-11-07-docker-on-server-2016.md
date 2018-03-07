@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title: Docker on Server 2016
 ---
 
@@ -41,7 +42,7 @@ docker images -f "dangling=true" -q | %{docker rmi $_}
 # Stop and remove all containers by label
 
 ```powershell
-docker container ls -a -f label=mylabel --format "{{.ID}}" | % {
+docker container ls -a -f label=mylabel --format {% raw  %}"{{.ID}}"{% endraw %} | % {
     docker container stop $_ } | % {
     docker container rm $_ }
 ```

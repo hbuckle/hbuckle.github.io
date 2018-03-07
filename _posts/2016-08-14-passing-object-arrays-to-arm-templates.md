@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title: Passing object arrays to ARM templates
 ---
 
