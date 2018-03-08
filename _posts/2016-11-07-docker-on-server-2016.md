@@ -2,6 +2,11 @@
 layout: post
 comments: true
 title: Docker on Server 2016
+tags:
+  - Windows
+  - Docker
+categories:
+  - Docker
 ---
 
 Now that Server 2016 has launched Windows Containers are a thing. I've been busy shoehorning as many things as possible into containers,

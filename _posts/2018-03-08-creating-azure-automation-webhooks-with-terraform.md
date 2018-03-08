@@ -5,6 +5,9 @@ title: Creating Azure Automation webhooks with Terraform
 tags:
   - Terraform
   - Azure Automation
+  - Hacky workaround
+categories:
+  - Terraform
 ---
 
 Azure automation runbooks are great for running scripts in the cloud, either in

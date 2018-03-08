@@ -2,6 +2,12 @@
 layout: post
 comments: true
 title: Passing object arrays to ARM templates
+tags:
+  - ARM
+  - Azure
+  - DotNet
+categories:
+  - ARM
 ---
 
 Recently I've been getting into ARM deployment templates to create infrastructure in Azure. There's loads of documentation out there on using these templates,
