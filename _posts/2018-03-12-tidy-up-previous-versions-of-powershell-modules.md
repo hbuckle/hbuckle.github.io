@@ -3,7 +3,7 @@ layout: post
 comments: true
 title: Tidy up previous versions of PowerShell modules
 tags:
-  - PowerShell
+  - PowerShellGet
   - Quick script
 categories:
   - PowerShell
