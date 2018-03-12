@@ -9,26 +9,32 @@ categories:
   - Azure
 ---
 
-```hcl
-resource "azurerm_virtual_machine_extension" "test" {
-  name                       = "cplattest"
-  location                   = "${azurerm_resource_group.resource_group.location}"
-  resource_group_name        = "${azurerm_resource_group.resource_group.name}"
-  virtual_machine_name       = "${azurerm_virtual_machine.virtual_machine.name}"
-  publisher                  = "Microsoft.CPlat.Core"
-  type                       = "RunCommandWindows"
-  type_handler_version       = "1.0"
-  auto_upgrade_minor_version = true
+When a server is deployed in Azure you often need to set it up in some way. A common way
+to do this is by using the custom script extension for [Windows](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/extensions-customscript)
+or [Linux](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/extensions-customscript).
 
-  settings = <<SETTINGS
-    {
-        "script": [
-          "powershell -command write-output hello"
-        ]
-    }
-SETTINGS
-}
+However these do have a couple of disadvantages, the first being that you have to publish your
+script somewhere, which you may not want to do depending on the content.
+Second the VM needs internet access to actually download the script, so it won't work
+if you are behind a proxy server.
+
+Recently a new command appeared in AzureRM PowerShell called [Invoke-AzureRmVMRunCommand](https://docs.microsoft.com/en-us/powershell/module/azurerm.compute/invoke-azurermvmruncommand?view=azurermps-5.4.0)
+that allows commands to be run against a VM without downloading a script from the internet.
+
+Under the covers this is using a new VM extension published by Microsoft.CPlat.Core called
+RunCommandWindows or RunCommandLinux
+
 ```
+>az vm extension image list -l northeurope -p Microsoft.CPlat.Core -o tsv
+RunCommandLinux         Microsoft.CPlat.Core    1.0.0
+RunCommandWindows       Microsoft.CPlat.Core    1.0.0
+RunCommandWindows       Microsoft.CPlat.Core    1.0.1
+```
+
+So what if you want to use this extension from ARM or Terraform without calling PowerShell?
+The extension doesn't appear to be documented anywhere so a little reverse engineering is necessary.
+If we decompile the RunCommandExtension.exe that is created on the VM and look at the PublicSettings
+class we can see it has a parameter called `script` that expects a list of strings.
 
 ```c#
 [DataContract]
@@ -46,6 +52,21 @@ public class PublicSettings
     return "Script: [" + ((this.Script != null) ? string.Join("\n", this.Script) : string.Empty) + "]";
   }
 }
+```
+
+What this means is that in the `settings` part of the extension you pass the script as an
+array, with each line as a separate element.
+
+```json
+{
+  "script": [
+    "$date = get-date",
+    "write-output $date.ToShortDateString()"
+  ]
+}
+```
+
+```c#
 
 [DataContract]
 public class ProtectedSettings
