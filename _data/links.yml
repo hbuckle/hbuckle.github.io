@@ -1,5 +1,8 @@
-- url: "https://www.linkedin.com/in/henry-buckle-382417159"
-  title: "LinkedIn"
+- url: https://www.linkedin.com/in/henry-buckle-382417159
+  title: LinkedIn
 
-- url: "https://github.com/hbuckle"
-  title: "Github"
+- url: https://github.com/hbuckle
+  title: Github
+
+- url: https://forge.puppet.com/hbuckle
+  title: Puppet Forge
